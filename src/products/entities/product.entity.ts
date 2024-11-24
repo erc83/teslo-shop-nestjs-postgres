@@ -1,1 +1,13 @@
-export class Product {}
+import { Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+
+
+@Entity()
+export class Product {
+
+    @PrimaryGeneratedColumn('uuid')
+    id: string                         // defecto number
+
+    @Column('text', { unique: true,} )
+    title: string
+
+}
