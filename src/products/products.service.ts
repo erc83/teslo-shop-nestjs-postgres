@@ -29,11 +29,8 @@ export class ProductsService {
       return product
 
     } catch (error) {
-      // console.log(error)
-      if( error.code === '23505' ) throw new BadRequestException(error.detail)
-        
-      this.logger.error(error)
-      throw new InternalServerErrorException('Ayuda!')
+        // console.log(error)
+        this.handleDBExceptionsError( error )
     }
 
   }
@@ -53,4 +50,15 @@ export class ProductsService {
   remove(id: number) {
     return `This action removes a #${id} product`;
   }
+
+  // methodo privado para manejo de errorres cetralizados crud products
+  private handleDBExceptionsError( error: any ) {
+
+    if( error.code === '23505' ) throw new BadRequestException(error.detail)
+        
+    this.logger.error(error)
+    throw new InternalServerErrorException('Unexpected error, check server logs')
+  }
+
+
 }
