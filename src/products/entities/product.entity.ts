@@ -10,7 +10,7 @@ export class Product {
     @Column('text', { unique: true,} )
     title: string;
     
-    @Column('numeric', { default: 0 })
+    @Column('float', { default: 0 })
     price: number;
 
     // otra forma de crear la columna
