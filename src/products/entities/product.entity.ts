@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert} from "typeorm";
 
 
 @Entity()
@@ -35,5 +35,23 @@ export class Product {
 
     //tags
     //images
+
+    @BeforeInsert()
+    checkSlugInsert() {
+        if( !this.slug ) {                      // hace referencia a la instancia de mi identidad
+            this.slug = this.title
+            //createProductDto.slug = createProductDto.title
+            //.toLowerCase()
+            //.replaceAll(' ','_')
+            //.replaceAll("'",'')
+        }
+
+        this.slug = this.slug
+            .toLowerCase()
+            .replaceAll(' ','_')
+            .replaceAll("'",'')
+    }
+
+    // @BeforeUpdated()
 
 }
