@@ -11,7 +11,7 @@ export class PaginationDto {
     limit?: number
     
     @IsOptional()
-    @IsPositive()
+    // @IsPositive()        // no considera el 0
     @Min(0)
     @Type( () => Number )   // tranforma el string del param a Number
     offset?: number
