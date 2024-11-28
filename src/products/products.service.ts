@@ -1,4 +1,5 @@
-import { BadRequestException, Injectable, InternalServerErrorException, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, 
+  NotFoundException } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -38,12 +39,18 @@ export class ProductsService {
 
   }
 
+  // TODO: paginar
   findAll() {
-    return `This action returns all products`;
+    return this.productRepository.find({})
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne( id: string ) {
+
+    const product = await  this.productRepository.findOneBy({ id })
+    if( !product ) throw new NotFoundException(`Product with id ${ id } not found`)
+
+    return product
+    
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {
