@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [ 
@@ -18,7 +19,7 @@ import { ProductsModule } from './products/products.module';
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,         // cargar entidades que se definan poco a poco
       synchronize: true,              // al hacer cambio en la entidades, automaticamente las sincroniza
-    }), ProductsModule,        
+    }), ProductsModule, CommonModule,        
   ], 
   controllers: [AppController],
   providers: [AppService],
