@@ -6,7 +6,7 @@ import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
-import { validate as isUUID} from 'uuid';
+import { validate as isUUID } from 'uuid';
 
 @Injectable()
 export class ProductsService {
@@ -60,12 +60,19 @@ export class ProductsService {
     if( isUUID(term)  ) {
       product = await this.productRepository.findOneBy({ id: term });
     } else {
-      product = await this.productRepository.findOneBy({ slug: term })
+      //product = await this.productRepository.findOneBy({ slug: term })
+      const queryBuilder = this.productRepository.createQueryBuilder()
+      
+      // encontrar solo uno con typeORM
+      product = await queryBuilder
+        .where(`UPPER(title) =:title or slug =:slug`, {
+          title: term.toUpperCase(),
+          slug: term.toLowerCase(),
+        }).getOne()     // solo uno de ambos
     }
 
     // const product = await  this.productRepository.findOneBy({ id })
     if( !product ) throw new NotFoundException(`Product with ${ term } not found`)
-
     return product
     
   }
