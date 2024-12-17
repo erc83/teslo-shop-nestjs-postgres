@@ -33,7 +33,16 @@ export class Product {
     @Column('text')
     gender: string;
 
-    //tags
+    @Column({
+        type: 'text',
+        array: true,
+        default:[]
+    })
+    // @Column('text', { array: true, default:[] })        -> forma corta
+    tags: string[];
+
+
+
     //images
 
     @BeforeInsert()
