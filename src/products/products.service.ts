@@ -102,7 +102,17 @@ export class ProductsService {
     // const product = await  this.productRepository.findOneBy({ id })
     if( !product ) throw new NotFoundException(`Product with ${ term } not found`)
     return product
+    //return {...product, images: product.images.map(image => image.url )}    // trae error despues por el cambio de la entidad
     
+  }
+
+  // llamada intermedia para obtener la images por separado
+  async findOnePlain( term: string ) {
+    const { images = [], ...rest} = await this.findOne( term );
+    return {
+      ...rest,
+      images: images.map( image => image.url )
+    }
   }
 
   async update(id: string, updateProductDto: UpdateProductDto ) {
