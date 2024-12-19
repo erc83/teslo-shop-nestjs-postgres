@@ -38,7 +38,7 @@ export class ProductsService {
       // guardar base datos
       await this.productRepository.save( product )  // guarda product como imagenes
       
-      return product
+      return {...product, images: images }    //  "images": ["http://image1.jpg","http://image2.jpg"]
 
     } catch (error) {
         // console.log(error)
@@ -47,16 +47,35 @@ export class ProductsService {
 
   }
 
-  findAll( paginationDto:PaginationDto ) {
+  async findAll( paginationDto:PaginationDto ) {
     // destructuring
     const {limit = 10, offset = 0 } = paginationDto      // siempre obtengo un valor si no viene
 
-    return this.productRepository.find({
+    // obtener los productos con imagenes como un array con objeto   images: [{id:1, url: http://image1.jpg}]
+    /* return this.productRepository.find({
       take: limit,
       skip: offset,
-        //TODO: relaciones
+      relations: {
+        images: true,
+      }
+    })  */
+
+    // opcion 2 mostrando las imagenes como un arreglo para el front
+    const products = await this.productRepository.find({
+      take: limit,
+      skip: offset,
+      relations: {
+        images: true,
+      }
     })
+
+    return products.map( product => ({
+      ...product,
+      images: product.images.map( img => img.url )
+    }))
+
   }
+
 
   async findOne( term: string ) {
 
