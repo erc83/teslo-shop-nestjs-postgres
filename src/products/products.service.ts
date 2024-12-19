@@ -87,14 +87,16 @@ export class ProductsService {
       //product = await this.productRepository.findOne({ where: { id: term }, relations:{ images:true } } );  // llamando las imagenes usando relations
     } else {
       //product = await this.productRepository.findOneBy({ slug: term })
-      const queryBuilder = this.productRepository.createQueryBuilder()
-      
+      const queryBuilder = this.productRepository.createQueryBuilder('prod')   // alias tabla product
+
       // encontrar solo uno con typeORM
       product = await queryBuilder
         .where(`UPPER(title) =:title or slug =:slug`, {
           title: term.toUpperCase(),
           slug: term.toLowerCase(),
-        }).getOne()     // solo uno de ambos
+        })
+        .leftJoinAndSelect('prod.images', 'prodImages')  //  relacion     y   alias tabla product_images
+        .getOne()     // solo uno de ambos
     }
 
     // const product = await  this.productRepository.findOneBy({ id })
