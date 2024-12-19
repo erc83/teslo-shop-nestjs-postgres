@@ -84,6 +84,7 @@ export class ProductsService {
     // validacion UUID 
     if( isUUID(term)  ) {
       product = await this.productRepository.findOneBy({ id: term });
+      //product = await this.productRepository.findOne({ where: { id: term }, relations:{ images:true } } );  // llamando las imagenes usando relations
     } else {
       //product = await this.productRepository.findOneBy({ slug: term })
       const queryBuilder = this.productRepository.createQueryBuilder()

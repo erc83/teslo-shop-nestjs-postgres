@@ -46,7 +46,7 @@ export class Product {
     @OneToMany(
         () => ProductImage,                         //Regresa un ProductImage
         (productImage) => productImage.product, 
-        { cascade: true }
+        { cascade: true, eager: true  }             // con usar find*  llama la relacion de las imagens para el getProductById
     )
     images?: ProductImage[]             //coleccion de imagenes
 
