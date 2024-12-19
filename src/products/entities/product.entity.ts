@@ -48,7 +48,7 @@ export class Product {
         (productImage) => productImage.product, 
         { cascade: true }
     )
-    images?: ProductImage 
+    images?: ProductImage[]             //coleccion de imagenes
 
     @BeforeInsert()
     checkSlugInsert() {

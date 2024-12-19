@@ -38,5 +38,10 @@ export class CreateProductDto {
     @IsArray()
     @IsOptional()               // Si no se envia termina siendo un arreglo vacio
     tags: string[]
+    
+    @IsString({each: true})
+    @IsArray()
+    @IsOptional()
+    images?: string[]           // puede que venga o no
 
 }
