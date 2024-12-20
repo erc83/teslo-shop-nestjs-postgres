@@ -4,7 +4,7 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { PaginationDto } from 'src/common/dtos/pagination.dto';
 import { validate as isUUID } from 'uuid';
 import { ProductImage } from './entities/product-image.entity';
@@ -21,6 +21,8 @@ export class ProductsService {
 
     @InjectRepository(ProductImage)
     private readonly  productImageRepository: Repository<ProductImage>,
+
+    private readonly dataSource: DataSource,      // al inyectar sabe que base de datos estamos utilizando
 
   ){}
   
@@ -117,9 +119,11 @@ export class ProductsService {
 
   async update(id: string, updateProductDto: UpdateProductDto ) {
 
+    const { images, ...toUpdate} = updateProductDto
+
     const product = await this.productRepository.preload({
       id: id,                       // busca por este id
-      ...updateProductDto,           // carga todas las propiedades en este updateProductDTO
+      ...toUpdate,           // carga todas las propiedades en este updateProductDTO
       images:[]
     })
 
@@ -127,11 +131,36 @@ export class ProductsService {
       throw new NotFoundException(`Product with id: ${ id } not found`)
     }
 
+    // validamos si hay imagenes y la borramos de manera controlada
+    // Create query runner typeORM
+    const queryRunner = this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+
     try {
-      await this.productRepository.save( product )
+
+      // si viene imagen la borramos segun esta logica
+      if( images ){
+        await queryRunner.manager.delete( ProductImage, { product: { id: product.id }})             // eliminar las imagenes anteriores
+        product.images = images.map( image => this.productImageRepository.create({ url: image }))   //update
+      } else {    // body sin images     se hace consulta a base de datos y despues se tiene que transformar
+        // ???   
+        product.images = await this.productImageRepository.findBy({ product: { id }})
+      }
+
+      // await this.productRepository.save( product )
+      await queryRunner.manager.save(product)      // intenta guardarlo porque esta en la transaccion
+
+      await queryRunner.commitTransaction()
+      await queryRunner.release()
+
       return product
       
     } catch (error) {
+
+      await queryRunner.rollbackTransaction()   // si hay un error solicitamos el rollback
+      await queryRunner.release()               // desconectar
+
       this.handleDBExceptionsError(error)
     }
 
