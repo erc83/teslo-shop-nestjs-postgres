@@ -154,7 +154,8 @@ export class ProductsService {
       await queryRunner.commitTransaction()
       await queryRunner.release()
 
-      return product
+      //return product
+      return this.findOnePlain( id )      // tranformar los objetos de images en array de images tanto para el if como el else
       
     } catch (error) {
 
