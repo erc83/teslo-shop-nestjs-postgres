@@ -52,6 +52,12 @@ $ yarn run start:dev
 $ yarn run start:prod
 ```
 
+
+6. Ejecutar SEED only desarrollo
+```
+http://localhost:3000/api/seed
+```
+
 ## Run tests
 
 ```bash
