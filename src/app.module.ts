@@ -5,11 +5,12 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 import { CommonModule } from './common/common.module';
+import { SeedModule } from './seed/seed.module';
 
 @Module({
   imports: [ 
     ConfigModule.forRoot(),         //variables entorno
-
+    SeedModule,
     TypeOrmModule.forRoot({         // un forRoot mas son feature
       type: 'postgres',
       host: process.env.DB_HOST,
