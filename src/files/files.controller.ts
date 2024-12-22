@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Upl
 import { FilesService } from './files.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { fileFilter } from './helpers/fileFilter.helper';
+import { diskStorage } from 'multer';
 
 
 @Controller('files')
@@ -11,7 +12,11 @@ export class FilesController {
 
   @Post('product')
   @UseInterceptors( FileInterceptor( 'file', {
-    fileFilter: fileFilter
+    fileFilter: fileFilter,
+    limits: { fileSize: 5000000 },
+    storage: diskStorage({
+      destination: './static/uploads'
+    })
   } ) )           // FileInterceptor only en Express trasfondo
   uploadProductImage( @UploadedFile() file: Express.Multer.File ) {
   
