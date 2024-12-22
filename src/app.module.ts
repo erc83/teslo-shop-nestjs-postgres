@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from './products/products.module';
 import { CommonModule } from './common/common.module';
 import { SeedModule } from './seed/seed.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [ 
@@ -20,7 +21,8 @@ import { SeedModule } from './seed/seed.module';
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,         // cargar entidades que se definan poco a poco
       synchronize: true,              // al hacer cambio en la entidades, automaticamente las sincroniza
-    }), ProductsModule, CommonModule,        
+    }), ProductsModule, CommonModule, 
+    FilesModule,        
   ], 
   controllers: [AppController],
   providers: [AppService],
