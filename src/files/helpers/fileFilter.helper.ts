@@ -7,7 +7,7 @@ export const fileFilter = ( req: Express.Request, file: Express.Multer.File, cal
 
     const fileExtension = file.mimetype.split('/')[1]
 
-    const validExtensions = ['jpg', 'jpeg', 'png', 'gif']
+    const validExtensions = ['jpg', 'jpeg', 'png', 'gif', 'avif']
 
     // validacion aceptar el archivo
     if( validExtensions.includes( fileExtension )) {
