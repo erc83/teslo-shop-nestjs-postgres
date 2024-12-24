@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
 //import { CreateAuthDto } from './dto/create-auth.dto';
 import { UpdateAuthDto } from './dto/update-auth.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,10 +27,23 @@ export class AuthService {
       return user
 
     } catch (error) {
-      console.log(error)
+      //console.log(error)
+      this.handleDBErrors(error)
     }
 
   }
+
+  private handleDBErrors(error: any) : never {          // :never,    no regresa algun valor
+
+    if(error.code === '23505' )
+      throw new BadRequestException( error.detail )
+
+    console.log(error)
+
+    throw new InternalServerErrorException('Please check server logs')
+
+  }
+
 
   findAll() {
     return `This action returns all auth`;
