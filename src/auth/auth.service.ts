@@ -16,9 +16,20 @@ export class AuthService {
 
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    
-    return 'This action adds a new auth';
+  async create(createUserDto: CreateUserDto) {
+
+    try {
+
+      const user = this.userRepository.create( createUserDto )     // preparar para insertar
+      
+      await this.userRepository.save( user )
+
+      return user
+
+    } catch (error) {
+      console.log(error)
+    }
+
   }
 
   findAll() {
