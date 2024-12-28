@@ -1,16 +1,19 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+
+import { AuthService } from './auth.service';
+import { AuthController } from './auth.controller';
+import { User } from './entities/user.entity';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
   imports:[
+    ConfigModule, 
     TypeOrmModule.forFeature([ User ]),
     // estrategia a utilizar
     PassportModule.register({defaultStrategy: 'jwt'}),
@@ -26,7 +29,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        console.log('JWT secret config Service', configService.get('JWT_SECRET'))
+        //console.log('JWT secret config Service', configService.get('JWT_SECRET'))
         //console.log('JWT SECRET', process.env.JWT_SECRET)
         return {
           //secret: process.env.JWT_SECRET,
@@ -40,6 +43,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   ],
   exports:[
     TypeOrmModule,
+    JwtStrategy,          // para evaluar en otros lugares manualmente
+    PassportModule,       // para utilizar fuera del modulo tambien
+    JwtModule,
   ]
 })
 export class AuthModule {}
