@@ -14,12 +14,26 @@ import { JwtModule } from '@nestjs/jwt';
     // estrategia a utilizar
     PassportModule.register({defaultStrategy: 'jwt'}),
     //config jwt 
-    JwtModule.register({
+    /* JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {
         expiresIn: '2h'
       }
-    })
+    }) */
+
+    JwtModule.registerAsync({
+      imports: [],
+      inject: [],
+      useFactory: () => {
+        console.log('JWT SECRET', process.env.JWT_SECRET)
+        return {
+          secret: process.env.JWT_SECRET,
+          signOptions: {
+            expiresIn: '2h'
+          }
+        }
+      }
+    }),
   ],
   exports:[
     TypeOrmModule,
