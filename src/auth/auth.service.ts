@@ -1,12 +1,15 @@
 import { BadRequestException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
 //import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+
+import { UpdateAuthDto } from './dto/update-auth.dto';
+import { User } from './entities/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
+import { JwtPayload } from './interfaces/jwt.payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +18,8 @@ export class AuthService {
     // DI
     @InjectRepository( User )
     private readonly userRepository: Repository< User >,
+
+    private readonly jwtService: JwtService,
 
   ) {}
 
@@ -32,7 +37,11 @@ export class AuthService {
       
       delete user.password
 
-      return user
+      //return user
+      return {
+        ...user,
+        token: this.getJwtToken({ email: user.email })
+      }
       // TODO: retornar el JWT de acceso
 
     } catch (error) {
@@ -69,8 +78,17 @@ export class AuthService {
     if( !bcrypt.compareSync( password, user.password ) )
       throw new UnauthorizedException('Credentials are not valid (password)')
 
-    return user
-    //TODO: retornar el JWT
+    // return user
+    return {
+      ...user,
+      token: this.getJwtToken({ email: user.email })      // recibe un objeto el payload
+    }
+  }
+
+  private getJwtToken( payload: JwtPayload) {
+
+    const token = this.jwtService.sign( payload )
+    return token
 
   }
 
