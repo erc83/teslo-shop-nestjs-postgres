@@ -27,7 +27,8 @@ export class AuthController {
   testingPrivateRoute(
     //@Req() request: Express.Request
     //@GetUser(['email', 'password']) user: User     // -> con un array se obtienen todos los valores
-    @GetUser() user: User
+    @GetUser() user: User,
+    @GetUser('email') userEmail: string
   ) {
     //console.log({ user: request.user })      // en la request tenemos el usuario
     console.log({ user })
@@ -35,7 +36,8 @@ export class AuthController {
     return {
       ok: true,
       message: 'Hola Mundo Private',
-      user
+      user,
+      userEmail
     }
   }
 
