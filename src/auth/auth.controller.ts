@@ -26,6 +26,7 @@ export class AuthController {
   @UseGuards( AuthGuard() )
   testingPrivateRoute(
     //@Req() request: Express.Request
+    //@GetUser(['email', 'password']) user: User     // -> con un array se obtienen todos los valores
     @GetUser() user: User
   ) {
     //console.log({ user: request.user })      // en la request tenemos el usuario
