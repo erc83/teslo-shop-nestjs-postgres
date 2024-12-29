@@ -7,6 +7,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from './decorator/get-user.decorator';
 import { User } from './entities/user.entity';
+import { RawHeaders } from 'src/common/decorator/raw-headers.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -28,7 +29,9 @@ export class AuthController {
     //@Req() request: Express.Request
     //@GetUser(['email', 'password']) user: User     // -> con un array se obtienen todos los valores
     @GetUser() user: User,
-    @GetUser('email') userEmail: string
+    @GetUser('email') userEmail: string,
+
+    @RawHeaders() rawHeaders : string[],
   ) {
     //console.log({ user: request.user })      // en la request tenemos el usuario
     console.log({ user })
@@ -37,7 +40,8 @@ export class AuthController {
       ok: true,
       message: 'Hola Mundo Private',
       user,
-      userEmail
+      userEmail,
+      rawHeaders
     }
   }
 
