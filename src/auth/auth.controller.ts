@@ -5,6 +5,8 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from './decorator/get-user.decorator';
+import { User } from './entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -23,13 +25,16 @@ export class AuthController {
   @Get('private')
   @UseGuards( AuthGuard() )
   testingPrivateRoute(
-    @Req() request: Express.Request
+    //@Req() request: Express.Request
+    @GetUser() user: User
   ) {
-    console.log({ user: request.user })      // en la request tenemos el usuario
+    //console.log({ user: request.user })      // en la request tenemos el usuario
+    console.log({ user })
 
     return {
       ok: true,
-      message: 'Hola Mundo Private'
+      message: 'Hola Mundo Private',
+      user
     }
   }
 
