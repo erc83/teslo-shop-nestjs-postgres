@@ -3,6 +3,8 @@ import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException,
   from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { User } from 'src/auth/entities/user.entity';
+import { META_ROLES } from 'src/auth/decorators/role-protected/role-protected.decorator';
+import { ValidRoles } from 'src/auth/interfaces/valid-roles';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
@@ -15,26 +17,30 @@ export class UserRoleGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-
-    const validRoles : string[] = this.reflector.get( 'roles', context.getHandler() )
     
+    // Obtener los roles permitidos de los metadatos
+    //const validRoles : string[] = this.reflector.get( META_ROLES , context.getHandler() )
+    const requiredRoles = this.reflector.get<ValidRoles[]>(META_ROLES, context.getHandler())
+    
+    if(!requiredRoles || requiredRoles.length === 0) {
+      return false;   // bloqueo de acceso si no hay roles especificados
+    }
+
+    // Obtener el usuario desde la solicitud
     const req = context.switchToHttp().getRequest()
     const user = req.user as User
 
-    if( !user )
-      throw new BadRequestException('User not found')
-
-    //console.log({ userRoles: user.roles })
-    for( const role of user.roles ) {
-      if( validRoles.includes( role ) ) {
-        return true
-      }
+    if( !user || !user.roles ) {
+      return false;
+      //throw new BadRequestException('User not found')
     }
 
-    //return true;      // si retorna false no entra en la ruta privada2
-    throw new ForbiddenException(
-      `User ${ user.fullName } need a valid role: [${ validRoles }]`
-    )
+    console.log(user, 'user-role.guard,ts')
+    // Verificar que el usuario tenga todos los roles requeridos
+    
+    
+    
+    return requiredRoles.every( role => user.roles.includes( role ))
 
   }
 }

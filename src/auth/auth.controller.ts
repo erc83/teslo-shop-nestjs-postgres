@@ -5,11 +5,13 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from './decorator/get-user.decorator';
+import { GetUser } from './decorators/get-user.decorator';
 import { User } from './entities/user.entity';
 import { RawHeaders } from 'src/common/decorator/raw-headers.decorator';
 import { IncomingHttpHeaders } from 'http';
 import { UserRoleGuard } from './guards/user-role/user-role.guard';
+import { META_ROLES, RoleProtected } from './decorators/role-protected/role-protected.decorator';
+import { ValidRoles } from './interfaces/valid-roles';
 
 @Controller('auth')
 export class AuthController {
@@ -48,15 +50,47 @@ export class AuthController {
       headers
     }
   }
-
+  
+  
+  
+  
+  //@SetMetadata( 'roles' , ['admin', 'moderador'])
+  
   @Get('private2')
-  @SetMetadata('roles', ['admin', 'moderador'])
+  //@RoleProtected()                    -> creo un arreglo vacio de roles y cualquiera puede ingresar a los servicios
+  @RoleProtected(ValidRoles.user)          
   @UseGuards( AuthGuard(), UserRoleGuard )
   privateRoute2(
     @GetUser() user: User 
   ){
     return {
       ok: true,
+      user
+    }
+  }
+
+  @Get('private_user_moderador')
+  @RoleProtected(ValidRoles.user, ValidRoles.moderador)          
+  @UseGuards( AuthGuard(), UserRoleGuard )
+  privateRoute3(
+    @GetUser() user: User 
+  ){
+    return {
+      ok: true,
+      message: 'respuesta a usuario con rol de user y moderador', // necesita ambos roles para poder ingresar
+      user
+    }
+  }
+
+  @Get('private_moderador_admin')
+  @RoleProtected(ValidRoles.admin, ValidRoles.moderador)  // el user necesita rol de admin y moderador
+  @UseGuards( AuthGuard(), UserRoleGuard )
+  privateRoute4(
+    @GetUser() user: User 
+  ){
+    return {
+      ok: true,
+      message: 'respuesta a usuario con rol de admin y moderador',
       user
     }
   }
