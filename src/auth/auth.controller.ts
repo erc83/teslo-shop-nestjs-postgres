@@ -12,6 +12,7 @@ import { IncomingHttpHeaders } from 'http';
 import { UserRoleGuard } from './guards/user-role/user-role.guard';
 import { META_ROLES, RoleProtected } from './decorators/role-protected/role-protected.decorator';
 import { ValidRoles } from './interfaces/valid-roles';
+import { Auth } from './decorators/auth.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -94,6 +95,21 @@ export class AuthController {
       user
     }
   }
+
+  @Get('private-composition-decorator-auth')
+  // @Auth()         // no esta solicitando roles y la ruta no tiene acceso
+  @Auth( ValidRoles.user )
+  privateRoute5(
+    @GetUser() user: User
+  ){
+    return {
+      ok: true,
+      message: 'Response decorator custom', 
+      user
+    }
+  }
+
+
 
 
   @Get()

@@ -17,12 +17,13 @@ export class UserRoleGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    
+
     // Obtener los roles permitidos de los metadatos
     //const validRoles : string[] = this.reflector.get( META_ROLES , context.getHandler() )
     const requiredRoles = this.reflector.get<ValidRoles[]>(META_ROLES, context.getHandler())
     
     if(!requiredRoles || requiredRoles.length === 0) {
+      console.log("No hay roles en el usuario o la ruta no solicita roles")
       return false;   // bloqueo de acceso si no hay roles especificados
     }
 
@@ -31,14 +32,12 @@ export class UserRoleGuard implements CanActivate {
     const user = req.user as User
 
     if( !user || !user.roles ) {
-      return false;
-      //throw new BadRequestException('User not found')
+      throw new BadRequestException('User not found')
+      //return false;
     }
 
-    console.log(user, 'user-role.guard,ts')
+    //console.log(user, 'user-role.guard,ts')
     // Verificar que el usuario tenga todos los roles requeridos
-    
-    
     
     return requiredRoles.every( role => user.roles.includes( role ))
 
