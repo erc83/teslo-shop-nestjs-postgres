@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, OneToMany} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, BeforeUpdate, OneToMany, ManyToOne } from 'typeorm';
 import { ProductImage } from "./product-image.entity";
+import { User } from 'src/auth/entities/user.entity';
 
 
 @Entity({ name: 'products'})
@@ -49,6 +50,13 @@ export class Product {
         { cascade: true, eager: true  }             // con usar find*  llama la relacion de las imagens para el getProductById
     )
     images?: ProductImage[]             //coleccion de imagenes
+
+    @ManyToOne(
+        () => User,
+        ( user ) => user.product,
+        { eager: true },               // mostrar la relacion     
+    )
+    user: User;
 
     @BeforeInsert()
     checkSlugInsert() {
