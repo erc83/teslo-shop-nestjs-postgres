@@ -109,6 +109,15 @@ export class AuthController {
     }
   }
 
+  @Get('refresh-token')
+  //@Auth( ValidRoles.user, ValidRoles.admin , ValidRoles.moderador )
+  @Auth( ValidRoles.user )
+  checkAuthStatus(
+    //@GetUser('id') id: string
+    @GetUser() user: User
+  ) {
+    return this.authService.checkAuthStatus(  user )
+  }
 
 
 

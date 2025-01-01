@@ -92,6 +92,14 @@ export class AuthService {
 
   }
 
+  async checkAuthStatus( user: User ){    // el usuario ya tiene toda la informacion
+
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id })
+    }
+    
+  }
 
 
   findAll() {
