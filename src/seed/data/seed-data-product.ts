@@ -14,13 +14,42 @@ interface SeedProduct {
 type ValidSizes = 'XS'|'S'|'M'|'L'|'XL'|'XXL'|'XXXL'|'2T'|'4T'|'6'|'8'|'10'|'12';
 type ValidTypes = 'shirts'|'pants'|'hoodies'|'hats'|'t-shirts';
 
+interface SeedUser {
+    email: string
+    fullName: string
+    password: string
+    roles: string[]
+}
 
 interface SeedData {
+    users: SeedUser[];
     products: SeedProduct[];
 }
 
-
 export const initialData: SeedData = {
+
+    users:[
+        {
+            email: 'Admin1@google.com',
+            fullName: 'Admin One',
+            password: 'Admin12345',
+            roles: ['admin']
+        }, 
+        {
+            email: 'user1@google.com',
+            fullName: 'User One',
+            password: 'User12345',
+            roles: ['user']
+        }, 
+        {
+            email: 'moderador1@google.com',
+            fullName: 'moderador One',
+            password: 'Moderador1',
+            roles: ['moderador']
+    
+        }, 
+    ],
+
     products: [
         {
             description: "Inspired by our vehicles’ 2024 holiday software update, the Santa Bot Long Sleeve Tee features a partially raised graphic of Tesla Optimus wearing a Santa hat on the front and a matching Tesla T logo on the back. Made from 100% cotton.",
