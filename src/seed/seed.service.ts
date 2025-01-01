@@ -20,7 +20,6 @@ export class SeedService {
     // antes de crear elimino los datos de la tabla
     await this.deleteTables()
 
-    //
     const AdminUser = await this.insertUsers()
 
     await this.insertNewProducts( AdminUser )
@@ -32,6 +31,7 @@ export class SeedService {
 
     const users: User[] = []
 
+    // guardar varios user con diferentes roles
     seedUsers.forEach( user => {
       users.push( this.userRepository.create( user ))
     })
@@ -41,6 +41,7 @@ export class SeedService {
 
     // return users[0]      // llega sin el id y nos arroja error
     return dbUsers[0]
+
 
   }
 

@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 interface SeedProduct {
     description: string;
     images: string[];
@@ -30,23 +31,22 @@ export const initialData: SeedData = {
 
     users:[
         {
-            email: 'Admin1@google.com',
+            email: 'admin1@google.com',
             fullName: 'Admin One',
-            password: 'Admin12345',
+            password: bcrypt.hashSync( 'Admin12345', 10),
             roles: ['admin']
         }, 
         {
             email: 'user1@google.com',
             fullName: 'User One',
-            password: 'User12345',
+            password: bcrypt.hashSync( 'User12345', 10),
             roles: ['user']
         }, 
         {
             email: 'moderador1@google.com',
             fullName: 'moderador One',
-            password: 'Moderador1',
+            password: bcrypt.hashSync( 'Moderador1', 10),
             roles: ['moderador']
-    
         }, 
     ],
 
