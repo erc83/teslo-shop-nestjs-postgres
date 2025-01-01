@@ -1,4 +1,10 @@
 import * as bcrypt from 'bcrypt';
+import { ConfigService } from '@nestjs/config';
+import { config } from 'dotenv'
+
+config()
+const configService = new ConfigService()
+
 interface SeedProduct {
     description: string;
     images: string[];
@@ -27,25 +33,29 @@ interface SeedData {
     products: SeedProduct[];
 }
 
+const adminPass = configService.get<string>('ADMIN_SEED_PASS')
+const userPass = configService.get<string>('USER_SEED_PASS')
+const moderadorPass = configService.get<string>('MODERADOR_SEED_PASS')
+
 export const initialData: SeedData = {
 
     users:[
         {
             email: 'admin1@google.com',
             fullName: 'Admin One',
-            password: bcrypt.hashSync( 'Admin12345', 10),
+            password: bcrypt.hashSync( adminPass, 10),
             roles: ['admin', 'moderador', 'user']
         }, 
         {
             email: 'user1@google.com',
             fullName: 'User One',
-            password: bcrypt.hashSync( 'User12345', 10),
+            password: bcrypt.hashSync( userPass, 10),
             roles: ['user']
         }, 
         {
             email: 'moderador1@google.com',
             fullName: 'moderador One',
-            password: bcrypt.hashSync( 'Moderador1', 10),
+            password: bcrypt.hashSync( moderadorPass, 10),
             roles: ['moderador', 'user']
         }, 
     ],

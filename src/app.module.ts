@@ -15,7 +15,7 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [ 
-    ConfigModule.forRoot(),         //variables entorno
+    ConfigModule.forRoot({ isGlobal: true }),         //variables entorno
     SeedModule,
     TypeOrmModule.forRoot({         // un forRoot mas son feature
       type: 'postgres',
